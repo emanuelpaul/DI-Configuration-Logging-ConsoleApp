@@ -9,7 +9,11 @@
                 "build",
                 "${workspaceFolder}/DI-Configuration-Logging-ConsoleApp.csproj"
             ],
-            "problemMatcher": "$tsc"
+            "problemMatcher": "$tsc",
+            "group":{
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
             "label": "publish",

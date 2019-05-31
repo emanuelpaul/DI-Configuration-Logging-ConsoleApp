@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DI_Configuration_Logging_ConsoleApp
 {
@@ -9,11 +10,13 @@ namespace DI_Configuration_Logging_ConsoleApp
     {
         static void Main(string[] args)
         {
-            var serviceProvider = RegisterServices(args);
-
+            ServiceProvider serviceProvider = RegisterServices(args);
             IConfiguration configuration = serviceProvider.GetService<IConfiguration>();
 
-            Console.WriteLine(configuration["github:apiUrl"]);
+            ILogger logger = serviceProvider.GetService<ILogger<Program>>();
+            logger.LogInformation("Github api url is: {githubApiUrl}", configuration["github:apiUrl"]);
+
+            serviceProvider.Dispose();
         }
 
         private static ServiceProvider RegisterServices(string[] args)
@@ -26,7 +29,8 @@ namespace DI_Configuration_Logging_ConsoleApp
                 .Build();
 
             var serviceCollection = new ServiceCollection();
-            
+
+            serviceCollection.AddLogging(cfg => cfg.AddConsole());
             serviceCollection.AddSingleton((IConfiguration)configuration);
 
             return serviceCollection.BuildServiceProvider();
