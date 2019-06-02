@@ -21,19 +21,23 @@ namespace DI_Configuration_Logging_ConsoleApp
 
         private static ServiceProvider RegisterServices(string[] args)
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
+            IConfiguration configuration = SetupConfiguration(args);
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddLogging(cfg => cfg.AddConsole());
+            serviceCollection.AddSingleton(configuration);
+
+            return serviceCollection.BuildServiceProvider();
+        }
+
+        private static IConfiguration SetupConfiguration(string[] args)
+        {
+            return new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables()
                 .AddCommandLine(args)
                 .Build();
-
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddLogging(cfg => cfg.AddConsole());
-            serviceCollection.AddSingleton((IConfiguration)configuration);
-
-            return serviceCollection.BuildServiceProvider();
         }
     }
 }
