@@ -10,13 +10,11 @@ namespace DI_Configuration_Logging_ConsoleApp
     {
         static void Main(string[] args)
         {
-            ServiceProvider serviceProvider = RegisterServices(args);
+            using ServiceProvider serviceProvider = RegisterServices(args);
             IConfiguration configuration = serviceProvider.GetService<IConfiguration>();
 
             ILogger logger = serviceProvider.GetService<ILogger<Program>>();
             logger.LogInformation("Github api url is: {githubApiUrl}", configuration["github:apiUrl"]);
-
-            serviceProvider.Dispose();
         }
 
         private static ServiceProvider RegisterServices(string[] args)
